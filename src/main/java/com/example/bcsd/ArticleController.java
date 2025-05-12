@@ -3,75 +3,82 @@ package com.example.bcsd;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/articles")
 public class ArticleController {
+    private final ArticleService articleService;
+    private final MemberService memberService;
+    private final BoardService boardService;
 
-    private final Map<Long, String> articles = new HashMap<>();
-    private long articleId = 1;
+    public ArticleController(ArticleService articleService,
+                             MemberService memberService,
+                             BoardService boardService) {
+        this.articleService = articleService;
+        this.memberService = memberService;
+        this.boardService = boardService;
+    }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> create(@RequestBody Map<String, String> article) {
-        String content = article.get("content");
-        Map<String, Object> response = new HashMap<>();
-        if (content != null) {
-            long id = articleId++;
-            articles.put(id, content);
-            response.put("message", "Article created");
-            response.put("id", id);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } else {
-            response.put("message", "Content is missing");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Article> post(@RequestBody Map<String, String> article) {
+        long userId = Long.parseLong(article.get("userId"));
+        long boardId = Long.parseLong(article.get("boardId"));
+
+        if (!memberService.validId(userId) || !boardService.validId(boardId)) {
+            return ResponseEntity.badRequest().build();
         }
+
+        String title = article.get("title");
+        String content = article.get("content");
+
+        Article created = articleService.save(userId, boardId, title, content);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getArticle(@PathVariable Long id) {
-        String article = articles.get(id);
-        Map<String, Object> response = new HashMap<>();
-        if (article != null) {
-            response.put("content", article);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            response.put("message", "Article not found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Article> get(@PathVariable long id) {
+        if (!articleService.validArticle(id)) {
+            return ResponseEntity.notFound().build();
         }
+        Article article = articleService.findById(id);
+        return ResponseEntity.ok(article);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody Map<String, String> article) {
-        String content = article.get("content");
-        Map<String, Object> response = new HashMap<>();
-        if (articles.containsKey(id)) {
-            if (content != null) {
-                articles.put(id, content);
-                response.put("message", "Article updated");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                response.put("message", "Content is missing");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            response.put("message", "Article not found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Article> put(@PathVariable long id,
+                                          @RequestBody Map<String, String> article) {
+        if (!articleService.validArticle(id)) {
+            return ResponseEntity.notFound().build();
         }
+        String password = article.get("password");
+        if(!memberService.findById(articleService.findById(id).getUserId()).getPassword().equals(password)){
+            return ResponseEntity.badRequest().build();
+        }
+        String title = article.get("title");
+        String content = article.get("content");
+        Article updated = articleService.update(id, title, content);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
-        Map<String, Object> response = new HashMap<>();
-        if (articles.containsKey(id)) {
-            articles.remove(id);
-            response.put("message", "Article deleted");
-            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-        } else {
-            response.put("message", "Article not found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> delete(@PathVariable long id,
+                                       @RequestBody Map<String, String> article) {
+        if (!articleService.validArticle(id)) {
+            return ResponseEntity.notFound().build();
         }
+        String password = article.get("password");
+        if(!memberService.findById(articleService.findById(id).getUserId()).getPassword().equals(password)){
+            return ResponseEntity.badRequest().build();
+        }
+        articleService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Article>> getAll() {
+        List<Article> articles = articleService.findAll();
+        return ResponseEntity.ok(articles);
     }
 }

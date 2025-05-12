@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 목록</title>
+</head>
+<body>
+<div th:each="board : ${boards}">
+    <h2 th:text="${board.name}">게시판 이름</h2>
+    <div th:each="article : ${articlesMap[board.id]}">
+        <h3 th:text="${article.title}">제목</h3>
+        <span th:text="${@memberService.findById(article.userId).name}">작성자</span> |
+        <span th:text="${article.putDate}">최종수정일</span>
+        <div th:text="${article.content}">내용</div>
+    </div>
+</div>
+</body>
+</html>
