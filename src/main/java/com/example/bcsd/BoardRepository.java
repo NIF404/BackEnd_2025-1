@@ -1,8 +1,11 @@
 package com.example.bcsd;
 
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,27 +20,47 @@ public class BoardRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final Map<Long, Board> boardMap = new HashMap<>();
-    private long boardId = 1;
-
     public Board save(String name) {
-        long id = boardId++;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "insert into board (name) values (?)",
+                    new String[]{"id"});
+            ps.setString(1, name);
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
         Board board = new Board.Builder(id)
                 .name(name)
                 .build();
-        boardMap.put(id, board);
+
         return board;
     }
 
     public boolean delete(long id) {
-        return boardMap.remove(id) != null;
+        return jdbcTemplate.update("DELETE FROM board WHERE id = ?", id) != 0;
     }
 
     public Board findById(long id){
-        return boardMap.get(id);
+        return jdbcTemplate.queryForObject(
+                "SELECT id, name FROM board WHERE id = ?",
+                (resultSet, rowNum) -> new Board.Builder
+                        (resultSet.getLong("id"))
+                        .name(resultSet.getString("name"))
+                        .build(),
+                id
+        );
     }
 
     public List<Board> findAll() {
-        return new ArrayList<>(boardMap.values());
+        return jdbcTemplate.query(
+                "SELECT id, name FROM board",
+                (resultSet, rowNum) -> new Board.Builder
+                        (resultSet.getLong("id"))
+                        .name(resultSet.getString("name"))
+                        .build()
+        );
     }
 }
