@@ -2,7 +2,11 @@ package com.example.bcsd;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +81,10 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Article>> getAll() {
-        List<Article> articles = articleService.findAll();
+    public ResponseEntity<List<Article>> getArticlesByBoardId(@RequestParam(name="boardId", required=true)
+                              Long id, Model model) {
+        List<Article> articles = articleService.findByBoardId(id);
+
         return ResponseEntity.ok(articles);
     }
 }
