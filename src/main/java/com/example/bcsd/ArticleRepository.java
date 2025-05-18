@@ -1,52 +1,99 @@
 package com.example.bcsd;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class ArticleRepository {
-    private final Map<Long, Article> articleMap = new HashMap<>();
-    private long articleId = 1;
+    private JdbcTemplate jdbcTemplate;
+
+    ArticleRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Article save(long userId, long boardId, String postDate, String title, String content) {
-        long id = articleId++;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "insert into article (author_id, board_id, title, content, created_date, modified_date) " +
+                            "values (?, ?, ?, ?, ?, ?)",
+                    new String[]{"id"});
+            ps.setLong(1, userId);
+            ps.setLong(2, boardId);
+            ps.setString(3, title);
+            ps.setString(4, content);
+            ps.setString(5, postDate);
+            ps.setString(6, postDate);
+            return ps;
+        }, keyHolder);
+
+        Long id = keyHolder.getKey().longValue();
+
         Article article = new Article.Builder(id, userId, boardId, postDate)
                 .title(title)
                 .content(content)
                 .build();
-        articleMap.put(id, article);
+
         return article;
     }
 
     public boolean delete(long id) {
-        return articleMap.remove(id) != null;
+        return jdbcTemplate.update("DELETE FROM article WHERE id = ?", id) != 0;
     }
 
     public List<Article> findByBoardId(long boardId) {
-        List<Article> result = new ArrayList<>();
-        for (Article a : articleMap.values()) {
-            if (a.getBoardId() == boardId) {
-                result.add(a);
-            }
-        }
-        return result;
+        return jdbcTemplate.query(
+                "SELECT id, author_id, board_id, title, content, modified_date FROM article WHERE board_id = ?",
+                (resultSet, rowNum) -> new Article.Builder
+                        (resultSet.getLong("id"),
+                                resultSet.getLong("author_id"),
+                                resultSet.getLong("board_id"),
+                                resultSet.getString("modified_date"))
+                        .title(resultSet.getString("title"))
+                        .content(resultSet.getString("content"))
+                        .build(),
+                boardId
+        );
     }
 
     public Article findById(long id) {
-        return articleMap.get(id);
+        return jdbcTemplate.queryForObject(
+                "SELECT id, author_id, board_id, title, content, modified_date FROM article WHERE id = ?",
+                (resultSet, rowNum) -> new Article.Builder
+                        (resultSet.getLong("id"),
+                                resultSet.getLong("author_id"),
+                                resultSet.getLong("board_id"),
+                                resultSet.getString("modified_date"))
+                        .title(resultSet.getString("title"))
+                        .content(resultSet.getString("content"))
+                        .build(),
+                id
+        );
     }
 
     public void update(long id, String newTitle, String newContent, String newPutDate) {
-        Article article = articleMap.get(id);
-        article.setTitle(newTitle);
-        article.setContent(newContent);
-        article.setPutDate(newPutDate);
+        jdbcTemplate.update(
+                "UPDATE article SET title = ?, content = ?, modified_date = ? WHERE id = ?",
+                newTitle, newContent, newPutDate, id
+        );
     }
 
     public List<Article> findAll() {
-        return new ArrayList<>(articleMap.values());
+        return jdbcTemplate.query(
+                "SELECT id, author_id, board_id, title, content, modified_date FROM article",
+                (resultSet, rowNum) -> new Article.Builder
+                        (resultSet.getLong("id"),
+                                resultSet.getLong("author_id"),
+                                resultSet.getLong("board_id"),
+                                resultSet.getString("modified_date"))
+                        .title(resultSet.getString("title"))
+                        .content(resultSet.getString("content"))
+                        .build()
+        );
     }
 }

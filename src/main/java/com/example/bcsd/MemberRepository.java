@@ -6,14 +6,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.util.HashMap;
-import java.util.Map;
 
 @Repository
 public class MemberRepository {
     private JdbcTemplate jdbcTemplate;
 
-    MemberRepository(JdbcTemplate jdbcTemplate){
+    MemberRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -21,7 +19,7 @@ public class MemberRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into board (name, email, password) values (?, ?, ?)",
+                    "insert into member (name, email, password) values (?, ?, ?)",
                     new String[]{"id"});
             ps.setString(1, name);
             ps.setString(2, email);
@@ -46,7 +44,7 @@ public class MemberRepository {
 
     public Member findById(long id) {
         return jdbcTemplate.queryForObject(
-                "SELECT id, name, email, password FROM board WHERE id = ?",
+                "SELECT id, name, email, password FROM member WHERE id = ?",
                 (resultSet, rowNum) -> new Member.Builder
                         (resultSet.getLong("id"))
                         .name(resultSet.getString("name"))
