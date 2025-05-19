@@ -1,6 +1,8 @@
 package com.example.bcsd;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -15,6 +17,7 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
+    @Transactional
     public Article save(long userId, long boardId, String title, String content) {
         String now = LocalDateTime.now().format(formatter);
         return articleRepository.save(userId, boardId, now, title, content);
@@ -32,12 +35,14 @@ public class ArticleService {
         return articleRepository.findById(id) != null;
     }
 
+    @Transactional
     public Article update(long id, String title, String content) {
         String now = LocalDateTime.now().format(formatter);
         articleRepository.update(id, title, content, now);
         return articleRepository.findById(id);
     }
 
+    @Transactional
     public boolean delete(long id) {
         return articleRepository.delete(id);
     }

@@ -1,6 +1,7 @@
 package com.example.bcsd;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,10 +13,12 @@ public class BoardService {
         this.boardRepository = boardRepository;
     }
 
+    @Transactional
     public Board save(String name) {
         return boardRepository.save(name);
     }
 
+    @Transactional
     public boolean delete(long id) {
         return boardRepository.delete(id);
     }

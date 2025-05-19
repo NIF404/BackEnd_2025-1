@@ -1,6 +1,7 @@
 package com.example.bcsd;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -10,10 +11,12 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public Member save(String name, String email, String password) {
         return memberRepository.save(name, email, password);
     }
 
+    @Transactional
     public boolean delete(long id) {
         return memberRepository.delete(id);
     }
