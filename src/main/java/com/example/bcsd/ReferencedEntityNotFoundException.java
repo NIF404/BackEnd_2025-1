@@ -1,10 +1,9 @@
 package com.example.bcsd;
 
-public class DBInvalidCreationRequestException extends RuntimeException
-{
+public class ReferencedEntityNotFoundException extends RuntimeException {
     private final int statusCode = 400;
 
-    public DBInvalidCreationRequestException(String message) {
+    public ReferencedEntityNotFoundException(String message) {
         super(message);
     }
 

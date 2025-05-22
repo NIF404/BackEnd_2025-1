@@ -1,9 +1,9 @@
 package com.example.bcsd;
 
-public class DBTableNotEmptyException extends RuntimeException {
+public class EntityHasArticleException extends RuntimeException {
     private final int statusCode = 400;
 
-    public DBTableNotEmptyException(String message) {
+    public EntityHasArticleException(String message) {
         super(message);
     }
 
