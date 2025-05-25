@@ -17,10 +17,6 @@ public class Board {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public static class Builder {
         private final long id;
         private String name = "";

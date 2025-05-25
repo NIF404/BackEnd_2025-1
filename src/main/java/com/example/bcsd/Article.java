@@ -47,18 +47,6 @@ public class Article {
         return putDate;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setPutDate(String putDate) {
-        this.putDate = putDate;
-    }
-
     public static class Builder {
         private final long id;
         private final long userId;
