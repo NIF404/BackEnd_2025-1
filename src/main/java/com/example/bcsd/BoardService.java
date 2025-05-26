@@ -23,6 +23,7 @@ public class BoardService {
         return boardRepository.delete(id);
     }
 
+    @Transactional(readOnly=true)
     public Board findById(long id) {
         return boardRepository.findById(id);
     }
@@ -31,6 +32,7 @@ public class BoardService {
         return boardRepository.findById(id) != null;
     }
 
+    @Transactional(readOnly=true)
     public List<Board> findAll() {
         return boardRepository.findAll();
     }

@@ -23,6 +23,7 @@ public class MemberService {
         return memberRepository.delete(id);
     }
 
+    @Transactional(readOnly=true)
     public Member findById(long id) {
         return memberRepository.findById(id);
     }

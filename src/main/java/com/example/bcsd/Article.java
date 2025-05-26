@@ -4,19 +4,19 @@ public class Article {
     private final long id;
     private final long userId;
     private final long boardId;
-    private final String postDate;
+    private final String createdAt;
     private String title;
     private String content;
-    private String putDate;
+    private String modifiedAt;
 
     private Article(Builder builder) {
         id = builder.id;
         userId = builder.userId;
         boardId = builder.boardId;
-        postDate = builder.postDate;
+        createdAt = builder.createdAt;
         title = builder.title;
         content = builder.content;
-        putDate = builder.putDate;
+        modifiedAt = builder.modifiedAt;
     }
 
     public long getId() {
@@ -31,8 +31,8 @@ public class Article {
         return boardId;
     }
 
-    public String getPostDate() {
-        return postDate;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
     public String getTitle() {
@@ -43,25 +43,25 @@ public class Article {
         return content;
     }
 
-    public String getPutDate() {
-        return putDate;
+    public String getModifiedAt() {
+        return modifiedAt;
     }
 
     public static class Builder {
         private final long id;
         private final long userId;
         private final long boardId;
-        private final String postDate;
+        private final String createdAt;
         private String title;
         private String content;
-        private String putDate = "";
+        private String modifiedAt = "";
 
-        public Builder(long id, long uId, long bId, String pD) {
+        public Builder(long id, long userId, long boardId, String createdAt) {
             this.id = id;
-            this.userId = uId;
-            this.boardId = bId;
-            this.postDate = pD;
-            this.putDate = pD;
+            this.userId = userId;
+            this.boardId = boardId;
+            this.createdAt = createdAt;
+            this.modifiedAt = createdAt;
         }
 
         public Builder title(String val) {

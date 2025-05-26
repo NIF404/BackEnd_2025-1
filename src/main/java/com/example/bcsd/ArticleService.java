@@ -23,14 +23,17 @@ public class ArticleService {
         return articleRepository.save(userId, boardId, now, title, content);
     }
 
+    @Transactional(readOnly=true)
     public Article findById(long id) {
         return articleRepository.findById(id);
     }
 
+    @Transactional(readOnly=true)
     public List<Article> findByBoardId(long boardId) {
         return articleRepository.findByBoardId(boardId);
     }
 
+    @Transactional(readOnly=true)
     public List<Article> findByMemberId(long memberId){
         return articleRepository.findByMemberId(memberId);
     }
@@ -51,6 +54,7 @@ public class ArticleService {
         return articleRepository.delete(id);
     }
 
+    @Transactional(readOnly=true)
     public List<Article> findAll() {
         return articleRepository.findAll();
     }

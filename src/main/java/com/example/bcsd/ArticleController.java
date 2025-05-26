@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ArticleController {
         }
 
         Article created = articleService.save(userId, boardId, title, content);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.created(URI.create("/articles/" + created.getId())).build();
     }
 
     @GetMapping("/{id}")

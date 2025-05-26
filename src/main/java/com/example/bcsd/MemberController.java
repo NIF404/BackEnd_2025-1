@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -28,7 +29,7 @@ public class MemberController {
         }
 
         Member created = memberService.save(name, email, password);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.created(URI.create("/member/" + created.getId())).build();
     }
 
     @GetMapping("/{id}")

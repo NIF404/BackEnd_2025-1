@@ -16,7 +16,7 @@ public class ArticleRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Article save(long userId, long boardId, String postDate, String title, String content) {
+    public Article save(long userId, long boardId, String createdAt, String title, String content) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -27,14 +27,14 @@ public class ArticleRepository {
             ps.setLong(2, boardId);
             ps.setString(3, title);
             ps.setString(4, content);
-            ps.setString(5, postDate);
-            ps.setString(6, postDate);
+            ps.setString(5, createdAt);
+            ps.setString(6, createdAt);
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
 
-        Article article = new Article.Builder(id, userId, boardId, postDate)
+        Article article = new Article.Builder(id, userId, boardId, createdAt)
                 .title(title)
                 .content(content)
                 .build();
@@ -91,18 +91,18 @@ public class ArticleRepository {
         );
     }
 
-    public void update(long id, String newTitle, String newContent, String newPutDate) {
+    public void update(long id, String newTitle, String newContent, String modifiedAt) {
         if(newTitle != null) {
             jdbcTemplate.update(
                     "UPDATE article SET title = ?, modified_date = ? WHERE id = ?",
-                    newTitle, newPutDate, id
+                    newTitle, modifiedAt, id
             );
         }
 
         if(newContent != null) {
             jdbcTemplate.update(
                     "UPDATE article SET content = ?, modified_date = ? WHERE id = ?",
-                    newContent, newPutDate, id
+                    newContent, modifiedAt, id
             );
         }
     }
