@@ -43,11 +43,12 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Article> get(@PathVariable long id) {
-        if (!articleService.validArticle(id)) {
-            return ResponseEntity.notFound().build();
+        try{
+            Article article = articleService.findById(id);
+            return ResponseEntity.ok(article);
+        } catch (RuntimeException e) {
+            throw new EntityNotFoundException("게시물을 찾을 수 없습니다");
         }
-        Article article = articleService.findById(id);
-        return ResponseEntity.ok(article);
     }
 
     @PutMapping("/{id}")
