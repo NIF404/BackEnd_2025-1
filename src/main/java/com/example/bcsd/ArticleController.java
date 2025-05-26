@@ -83,7 +83,7 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<List<Article>> getArticlesByBoardId(@RequestParam(name="boardId", required=true)
-                              Long id, Model model) {
+                              Long id) {
         List<Article> articles = articleService.findByBoardId(id);
 
         return ResponseEntity.ok(articles);
