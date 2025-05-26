@@ -61,6 +61,21 @@ public class ArticleRepository {
         );
     }
 
+    public List<Article> findByMemberId(long memberId) {
+        return jdbcTemplate.query(
+                "SELECT id, author_id, board_id, title, content, modified_date FROM article WHERE author_id = ?",
+                (resultSet, rowNum) -> new Article.Builder
+                        (resultSet.getLong("id"),
+                                resultSet.getLong("author_id"),
+                                resultSet.getLong("board_id"),
+                                resultSet.getString("modified_date"))
+                        .title(resultSet.getString("title"))
+                        .content(resultSet.getString("content"))
+                        .build(),
+                memberId
+        );
+    }
+
     public Article findById(long id) {
         return jdbcTemplate.queryForObject(
                 "SELECT id, author_id, board_id, title, content, modified_date FROM article WHERE id = ?",

@@ -4,8 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
 
 @Repository
 public class MemberRepository {
@@ -52,6 +54,13 @@ public class MemberRepository {
                         .password(resultSet.getString("password"))
                         .build(),
                 id
+        );
+    }
+
+    public void update(long id, String email){
+        jdbcTemplate.update(
+                "UPDATE member SET email = ? WHERE id = ?",
+                email, id
         );
     }
 }

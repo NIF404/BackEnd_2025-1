@@ -1,6 +1,5 @@
 package com.example.bcsd;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,7 @@ public class BoardController {
         String name = article.get("name");
 
         if(name == null){
-            throw new InvalidRequestBodyException("유효차지 않은 요청입니다.");
+            throw new InvalidRequestBodyException("유효하지 않은 요청입니다.");
         }
 
         Board created = boardService.save(name);

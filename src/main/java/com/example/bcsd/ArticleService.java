@@ -31,6 +31,10 @@ public class ArticleService {
         return articleRepository.findByBoardId(boardId);
     }
 
+    public List<Article> findByMemberId(long memberId){
+        return articleRepository.findByMemberId(memberId);
+    }
+
     public boolean validArticle(long id) {
         return articleRepository.findById(id) != null;
     }
