@@ -92,10 +92,19 @@ public class ArticleRepository {
     }
 
     public void update(long id, String newTitle, String newContent, String newPutDate) {
-        jdbcTemplate.update(
-                "UPDATE article SET title = ?, content = ?, modified_date = ? WHERE id = ?",
-                newTitle, newContent, newPutDate, id
-        );
+        if(newTitle != null) {
+            jdbcTemplate.update(
+                    "UPDATE article SET title = ?, modified_date = ? WHERE id = ?",
+                    newTitle, newPutDate, id
+            );
+        }
+
+        if(newContent != null) {
+            jdbcTemplate.update(
+                    "UPDATE article SET content = ?, modified_date = ? WHERE id = ?",
+                    newContent, newPutDate, id
+            );
+        }
     }
 
     public List<Article> findAll() {

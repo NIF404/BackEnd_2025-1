@@ -30,12 +30,20 @@ public class ArticleController {
         long userId = Long.parseLong(article.get("userId"));
         long boardId = Long.parseLong(article.get("boardId"));
 
-        if (!memberService.validId(userId) || !boardService.validId(boardId)) {
-            return ResponseEntity.badRequest().build();
+        try {
+            memberService.validId(userId);
+            boardService.validId(boardId);
+        }
+        catch (RuntimeException e){
+            throw new ReferencedEntityNotFoundException("유효하지 않은 게시판 또는 사용자 입니다.");
         }
 
         String title = article.get("title");
         String content = article.get("content");
+
+        if(title == null || content == null){
+            throw new InvalidRequestBodyException("유효하지 않은 요청입니다.");
+        }
 
         Article created = articleService.save(userId, boardId, title, content);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
@@ -54,13 +62,22 @@ public class ArticleController {
     @PutMapping("/{id}")
     public ResponseEntity<Article> put(@PathVariable long id,
                                           @RequestBody Map<String, String> article) {
-        if (!articleService.validArticle(id)) {
-            return ResponseEntity.notFound().build();
+        long userId = Long.parseLong(article.get("userId"));
+        long boardId = Long.parseLong(article.get("boardId"));
+
+        try {
+            memberService.validId(userId);
+            boardService.validId(boardId);
         }
+        catch (RuntimeException e){
+            throw new ReferencedEntityNotFoundException("유효하지 않은 게시판 또는 사용자 입니다.");
+        }
+
         String password = article.get("password");
         if(!memberService.findById(articleService.findById(id).getUserId()).getPassword().equals(password)){
-            return ResponseEntity.badRequest().build();
+            throw new InvalidRequestBodyException("비밀번호가 일치하지 않습니다.");
         }
+
         String title = article.get("title");
         String content = article.get("content");
         Article updated = articleService.update(id, title, content);
@@ -70,13 +87,18 @@ public class ArticleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id,
                                        @RequestBody Map<String, String> article) {
-        if (!articleService.validArticle(id)) {
-            return ResponseEntity.notFound().build();
+        try{
+            articleService.validArticle(id);
         }
+        catch (RuntimeException e){
+            throw new InvalidRequestBodyException("유효한 게시물 ID가 아닙니다.");
+        }
+
         String password = article.get("password");
         if(!memberService.findById(articleService.findById(id).getUserId()).getPassword().equals(password)){
-            return ResponseEntity.badRequest().build();
+            throw new InvalidRequestBodyException("비밀번호가 일치하지 않습니다.");
         }
+
         articleService.delete(id);
         return ResponseEntity.noContent().build();
     }
