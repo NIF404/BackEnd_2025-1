@@ -1,15 +1,24 @@
 package com.example.bcsd;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Board {
-    private final long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
 
-    private Board(Builder builder) {
-        id = builder.id;
-        name = builder.name;
+    protected Board() {
     }
 
-    public long getId() {
+    public Board(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -17,21 +26,7 @@ public class Board {
         return name;
     }
 
-    public static class Builder {
-        private final long id;
-        private String name = "";
-
-        public Builder(long id) {
-            this.id = id;
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Board build() {
-            return new Board(this);
-        }
+    public void updateName(String newName) {
+        this.name = newName;
     }
 }

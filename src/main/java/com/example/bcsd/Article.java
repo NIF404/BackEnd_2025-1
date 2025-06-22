@@ -1,38 +1,49 @@
 package com.example.bcsd;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
 public class Article {
-    private final long id;
-    private final long userId;
-    private final long boardId;
-    private final String createdAt;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "author_id")
+    private Long memberId;
+
+    private Long boardId;
     private String title;
     private String content;
-    private String modifiedAt;
 
-    private Article(Builder builder) {
-        id = builder.id;
-        userId = builder.userId;
-        boardId = builder.boardId;
-        createdAt = builder.createdAt;
-        title = builder.title;
-        content = builder.content;
-        modifiedAt = builder.modifiedAt;
+    @Column(name = "created_date")
+    private LocalDateTime createdAt;
+
+    @Column(name = "modified_date")
+    private LocalDateTime modifiedAt;
+
+    protected Article() {}
+
+    public Article(Long memberId, Long boardId, String title, String content) {
+        this.memberId = memberId;
+        this.boardId = boardId;
+        this.title = title;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+        this.modifiedAt = this.createdAt;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getUserId() {
-        return userId;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public long getBoardId() {
+    public Long getBoardId() {
         return boardId;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
     }
 
     public String getTitle() {
@@ -43,39 +54,21 @@ public class Article {
         return content;
     }
 
-    public String getModifiedAt() {
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getModifiedAt() {
         return modifiedAt;
     }
 
-    public static class Builder {
-        private final long id;
-        private final long userId;
-        private final long boardId;
-        private final String createdAt;
-        private String title;
-        private String content;
-        private String modifiedAt = "";
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
+        this.modifiedAt = LocalDateTime.now();
+    }
 
-        public Builder(long id, long userId, long boardId, String createdAt) {
-            this.id = id;
-            this.userId = userId;
-            this.boardId = boardId;
-            this.createdAt = createdAt;
-            this.modifiedAt = createdAt;
-        }
-
-        public Builder title(String val) {
-            title = val;
-            return this;
-        }
-
-        public Builder content(String val) {
-            content = val;
-            return this;
-        }
-
-        public Article build() {
-            return new Article(this);
-        }
+    public void updateContent(String newContent) {
+        this.content = newContent;
+        this.modifiedAt = LocalDateTime.now();
     }
 }

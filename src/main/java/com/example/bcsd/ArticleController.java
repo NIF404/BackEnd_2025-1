@@ -75,7 +75,7 @@ public class ArticleController {
         }
 
         String password = article.get("password");
-        if(!memberService.findById(articleService.findById(id).getUserId()).getPassword().equals(password)){
+        if(!memberService.findById(articleService.findById(id).getMemberId()).getPassword().equals(password)){
             throw new InvalidRequestBodyException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -96,7 +96,7 @@ public class ArticleController {
         }
 
         String password = article.get("password");
-        if(!memberService.findById(articleService.findById(id).getUserId()).getPassword().equals(password)){
+        if(!memberService.findById(articleService.findById(id).getMemberId()).getPassword().equals(password)){
             throw new InvalidRequestBodyException("비밀번호가 일치하지 않습니다.");
         }
 

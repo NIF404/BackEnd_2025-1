@@ -1,19 +1,28 @@
 package com.example.bcsd;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "member")
 public class Member {
-    private final long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private String email;
     private String password;
 
-    private Member(Builder builder) {
-        id = builder.id;
-        name = builder.name;
-        email = builder.email;
-        password = builder.password;
+    protected Member() {
     }
 
-    public long getId() {
+    public Member(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -29,33 +38,15 @@ public class Member {
         return password;
     }
 
-    public static class Builder {
-        private final long id;
-        private String name = "";
-        private String email = "";
-        private String password = "";
+    public void updateName(String name) {
+        this.name = name;
+    }
 
-        public Builder(long id) {
-            this.id = id;
-        }
+    public void updateEmail(String email) {
+        this.email = email;
+    }
 
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder email(String val) {
-            email = val;
-            return this;
-        }
-
-        public Builder password(String val) {
-            password = val;
-            return this;
-        }
-
-        public Member build() {
-            return new Member(this);
-        }
+    public void updatePassword(String password) {
+        this.password = password;
     }
 }

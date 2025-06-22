@@ -15,24 +15,24 @@ public class BoardService {
 
     @Transactional
     public Board save(String name) {
-        return boardRepository.save(name);
+        return boardRepository.save(new Board(name));
     }
 
     @Transactional
-    public boolean delete(long id) {
-        return boardRepository.delete(id);
+    public void delete(long id) {
+        boardRepository.deleteById(id);
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Board findById(long id) {
-        return boardRepository.findById(id);
+        return boardRepository.findById(id).get();
     }
 
     public boolean validId(long id) {
-        return boardRepository.findById(id) != null;
+        return boardRepository.existsById(id);
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<Board> findAll() {
         return boardRepository.findAll();
     }
