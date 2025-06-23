@@ -19,12 +19,12 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Member> post(@RequestBody Map<String, String> article){
+    public ResponseEntity<Member> post(@RequestBody Map<String, String> article) {
         String name = article.get("name");
         String email = article.get("email");
         String password = article.get("password");
 
-        if(name == null || email == null || password == null){
+        if (name == null || email == null || password == null) {
             throw new InvalidRequestBodyException("유효하지 않은 요청입니다.");
         }
 
@@ -34,7 +34,7 @@ public class MemberController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Member> get(@PathVariable long id) {
-        try{
+        try {
             Member member = memberService.findById(id);
             return ResponseEntity.ok(member);
         } catch (RuntimeException e) {
@@ -44,7 +44,7 @@ public class MemberController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        if(!articleService.findByMemberId(id).isEmpty()){
+        if (!articleService.findByMemberId(id).isEmpty()) {
             throw new EntityHasArticleException("작성한 게시글이 남아있어 삭제 불가");
         }
 
@@ -54,13 +54,12 @@ public class MemberController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Member> update(@PathVariable long id,
-                                         @RequestBody Map<String, String> article){
+                                         @RequestBody Map<String, String> article) {
         try {
             String email = article.get("email");
             Member updated = memberService.update(id, email);
             return ResponseEntity.ok(updated);
-        }
-        catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new EmailAlreadyExistsException("중복 이메일 입니다.");
         }
     }

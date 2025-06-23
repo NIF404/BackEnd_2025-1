@@ -1,6 +1,7 @@
 package com.example.bcsd;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +24,8 @@ public class Article {
     @Column(name = "modified_date")
     private LocalDateTime modifiedAt;
 
-    protected Article() {}
+    protected Article() {
+    }
 
     public Article(Long memberId, Long boardId, String title, String content) {
         this.memberId = memberId;

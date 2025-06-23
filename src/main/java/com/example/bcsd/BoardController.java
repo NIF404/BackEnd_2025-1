@@ -19,10 +19,10 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<Board> post(@RequestBody Map<String, String> article){
+    public ResponseEntity<Board> post(@RequestBody Map<String, String> article) {
         String name = article.get("name");
 
-        if(name == null){
+        if (name == null) {
             throw new InvalidRequestBodyException("유효하지 않은 요청입니다.");
         }
 
@@ -32,7 +32,7 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Board> get(@PathVariable long id) {
-        try{
+        try {
             Board board = boardService.findById(id);
             return ResponseEntity.ok(board);
         } catch (RuntimeException e) {
@@ -42,7 +42,7 @@ public class BoardController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        if(!articleService.findByBoardId(id).isEmpty()){
+        if (!articleService.findByBoardId(id).isEmpty()) {
             throw new EntityHasArticleException("게시판에 게시글이 남아있어 삭제 불가");
         }
 

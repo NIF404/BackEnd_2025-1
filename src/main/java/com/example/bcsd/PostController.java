@@ -26,7 +26,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public String viewOnePost(@RequestParam(name="boardId", required=true)
+    public String viewOnePost(@RequestParam(name = "boardId", required = true)
                               Long id, Model model) {
         List<Board> board = new ArrayList<>(); // 리스트에 하나만 넣는 꼼수
         board.add(boardService.findById(id));
