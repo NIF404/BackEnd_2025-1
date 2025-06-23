@@ -14,7 +14,6 @@ public class Article {
     @Column(name = "author_id")
     private Long memberId;
 
-    private Long boardId;
     private String title;
     private String content;
 
@@ -24,12 +23,15 @@ public class Article {
     @Column(name = "modified_date")
     private LocalDateTime modifiedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
+
     protected Article() {
     }
 
-    public Article(Long memberId, Long boardId, String title, String content) {
+    public Article(Long memberId, String title, String content) {
         this.memberId = memberId;
-        this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.createdAt = LocalDateTime.now();
@@ -42,10 +44,6 @@ public class Article {
 
     public Long getMemberId() {
         return memberId;
-    }
-
-    public Long getBoardId() {
-        return boardId;
     }
 
     public String getTitle() {
@@ -72,5 +70,12 @@ public class Article {
     public void updateContent(String newContent) {
         this.content = newContent;
         this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void setBoard(Board board){
+        this.board = board;
+        if(!board.getArticles().contains(this)){
+            board.getArticles().add(this);
+        }
     }
 }

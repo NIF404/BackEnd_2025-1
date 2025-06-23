@@ -2,6 +2,9 @@ package com.example.bcsd;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Board {
 
@@ -10,6 +13,9 @@ public class Board {
     private Long id;
 
     private String name;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Article> articles = new ArrayList<>();
 
     protected Board() {
     }
@@ -28,5 +34,9 @@ public class Board {
 
     public void updateName(String newName) {
         this.name = newName;
+    }
+
+    public List<Article> getArticles(){
+        return articles;
     }
 }

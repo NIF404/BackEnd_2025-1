@@ -42,9 +42,6 @@ public class BoardController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
-        if (!articleService.findByBoardId(id).isEmpty()) {
-            throw new EntityHasArticleException("게시판에 게시글이 남아있어 삭제 불가");
-        }
 
         boardService.delete(id);
         return ResponseEntity.noContent().build();

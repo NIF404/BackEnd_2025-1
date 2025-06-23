@@ -8,14 +8,22 @@ import java.util.List;
 @Service
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final BoardRepository boardRepository;
 
-    public ArticleService(ArticleRepository articleRepository) {
+    public ArticleService(ArticleRepository articleRepository,
+                          BoardRepository boardRepository) {
         this.articleRepository = articleRepository;
+        this.boardRepository = boardRepository;
     }
 
     @Transactional
     public Article save(long memberId, long boardId, String title, String content) {
-        return articleRepository.save(new Article(memberId, boardId, title, content));
+        Board board = boardRepository.findById(boardId).get();
+
+        Article article = new Article(memberId, title, content);
+        article.setBoard(board);
+
+        return articleRepository.save(article);
     }
 
     @Transactional(readOnly = true)

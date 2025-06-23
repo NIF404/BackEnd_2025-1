@@ -28,11 +28,11 @@ public class ArticleController {
 
     @PostMapping
     public ResponseEntity<Article> post(@RequestBody Map<String, String> article) {
-        long userId = Long.parseLong(article.get("userId"));
+        long memberId = Long.parseLong(article.get("memberId"));
         long boardId = Long.parseLong(article.get("boardId"));
 
         try {
-            memberService.validId(userId);
+            memberService.validId(memberId);
             boardService.validId(boardId);
         } catch (RuntimeException e) {
             throw new ReferencedEntityNotFoundException("유효하지 않은 게시판 또는 사용자 입니다.");
@@ -45,7 +45,7 @@ public class ArticleController {
             throw new InvalidRequestBodyException("유효하지 않은 요청입니다.");
         }
 
-        Article created = articleService.save(userId, boardId, title, content);
+        Article created = articleService.save(memberId, boardId, title, content);
         return ResponseEntity.created(URI.create("/articles/" + created.getId())).build();
     }
 
@@ -62,11 +62,11 @@ public class ArticleController {
     @PutMapping("/{id}")
     public ResponseEntity<Article> put(@PathVariable long id,
                                        @RequestBody Map<String, String> article) {
-        long userId = Long.parseLong(article.get("userId"));
+        long memberId = Long.parseLong(article.get("memberId"));
         long boardId = Long.parseLong(article.get("boardId"));
 
         try {
-            memberService.validId(userId);
+            memberService.validId(memberId);
             boardService.validId(boardId);
         } catch (RuntimeException e) {
             throw new ReferencedEntityNotFoundException("유효하지 않은 게시판 또는 사용자 입니다.");
